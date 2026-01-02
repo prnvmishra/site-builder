@@ -1,0 +1,117 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': 'https://ai-site-builder-gray.vercel.app',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, PUT, DELETE',
+  'Access-Control-Allow-Credentials': 'true',
+}
+
+serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
+  }
+
+  try {
+    const url = new URL(req.url)
+    const path = url.pathname
+
+    // Better Auth compatible endpoints
+    if (path.includes('auth')) {
+      if (path.includes('session')) {
+        // Check for session cookie
+        const cookies = req.headers.get('cookie') || ''
+        const sessionMatch = cookies.match(/auth_session=([^;]+)/)
+        
+        if (sessionMatch) {
+          // For demo, return a mock user
+          return new Response(JSON.stringify({ 
+            user: { 
+              id: '123', 
+              email: 'test@test.com', 
+              name: 'Test User',
+              image: null,
+              emailVerified: true
+            } 
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          })
+        } else {
+          return new Response(JSON.stringify({ user: null }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          })
+        }
+      }
+      
+      if (path.includes('sign-in')) {
+        const body = await req.json().catch(() => ({}))
+        
+        // Set session cookie
+        const sessionId = 'mock-session-' + Date.now()
+        const sessionCookie = `auth_session=${sessionId}; Path=/; HttpOnly; SameSite=Lax; Max-Age=86400`
+        
+        return new Response(JSON.stringify({ 
+          user: { 
+            id: '123', 
+            email: body.email || 'test@test.com', 
+            name: 'Test User',
+            image: null,
+            emailVerified: true
+          }
+        }), {
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json',
+            'Set-Cookie': sessionCookie
+          }
+        })
+      }
+      
+      if (path.includes('sign-up')) {
+        const body = await req.json().catch(() => ({}))
+        
+        // Set session cookie
+        const sessionId = 'mock-session-' + Date.now()
+        const sessionCookie = `auth_session=${sessionId}; Path=/; HttpOnly; SameSite=Lax; Max-Age=86400`
+        
+        return new Response(JSON.stringify({ 
+          user: { 
+            id: '123', 
+            email: body.email || 'test@test.com', 
+            name: body.name || 'Test User',
+            image: null,
+            emailVerified: true
+          }
+        }), {
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json',
+            'Set-Cookie': sessionCookie
+          }
+        })
+      }
+      
+      if (path.includes('sign-out')) {
+        // Clear session cookie
+        return new Response(JSON.stringify({ success: true }), {
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json',
+            'Set-Cookie': 'auth_session=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0'
+          }
+        })
+      }
+    }
+
+    return new Response(JSON.stringify({ message: 'API Server Live!' }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    })
+
+  } catch (error) {
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    })
+  }
+})

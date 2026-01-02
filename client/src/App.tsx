@@ -9,7 +9,7 @@ import Community from './pages/Community'
 import View from './pages/View'
 import Navbar from './components/Navbar'
 import { Toaster } from 'sonner'
-import SimpleAuthPage from './pages/auth/SimpleAuthPage'
+import AuthPage from './pages/auth/AuthPage'
 import Settings from './pages/Settings'
 import Loading from './pages/Loading'
 
@@ -35,8 +35,7 @@ const App = () => {
         <Route path='/preview/:projectId/:versionId' element={<Preview />} />
         <Route path='/community' element={<Community />} />
         <Route path='/view/:projectId' element={<View />} />
-        <Route path="/sign-in" element={<SimpleAuthPage />} />
-        <Route path="/sign-up" element={<SimpleAuthPage />} />
+        <Route path="/auth/:pathname" element={<AuthPage />} />
         <Route path="/account/settings" element={<Settings />} />
         <Route path='/loading' element={<Loading />}/>
       </Routes>
