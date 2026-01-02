@@ -49,21 +49,48 @@ const Home = () => {
           Turn thoughts into websites instantly, with AI.
         </h1>
 
-        <p className="text-center text-base max-w-md mt-2">
-          Create, customize and publish website faster than ever with our AI Site Builder.
+        <p className="text-center text-gray-400 text-lg mt-4 max-w-2xl">
+          Transform your ideas into fully functional websites with our AI-powered website builder. No coding required.
         </p>
 
-        <form onSubmit={onSubmitHandler} className="bg-white/10 max-w-2xl w-full rounded-xl p-4 mt-10 border border-indigo-600/70 focus-within:ring-2 ring-indigo-500 transition-all">
-          <textarea onChange={e => setInput(e.target.value)} className="bg-transparent outline-none text-gray-300 resize-none w-full" rows={4} placeholder="Describe your presentation in details" required />
-          <button className="ml-auto flex items-center gap-2 bg-gradient-to-r from-[#CB52D4] to-indigo-600 rounded-md px-4 py-2">
-            {!loading ? 'Create with AI' : (
-              <>
-              Creating <Loader2Icon className='animate-spin size-4 text-white'/>
-              </>
-            )}
-            
-          </button>
-        </form>
+        {/* Auth Buttons */}
+        {!session?.user && (
+          <div className="flex gap-4 mt-8">
+            <a 
+              href="/auth/sign-in" 
+              className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+            >
+              Sign In
+            </a>
+            <a 
+              href="/auth/sign-up" 
+              className="px-6 py-3 border border-indigo-600 text-indigo-400 rounded-lg hover:bg-indigo-600 hover:text-white transition"
+            >
+              Sign Up
+            </a>
+          </div>
+        )}
+
+        {session?.user && (
+          <div className="mt-8">
+            <form onSubmit={onSubmitHandler} className="flex flex-col items-center gap-4">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Describe your website idea..."
+                className="w-full max-w-md p-4 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500"
+              />
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-8 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition flex items-center gap-2"
+              >
+                {loading ? <Loader2Icon className="animate-spin" size={20} /> : 'Create Website'}
+              </button>
+            </form>
+          </div>
+        )}
 
         <div className="flex flex-wrap items-center justify-center gap-16 md:gap-20 mx-auto mt-16">
           <img className="max-w-28 md:max-w-32" src="https://saasly.prebuiltui.com/assets/companies-logo/framer.svg" alt="" />
@@ -73,7 +100,6 @@ const Home = () => {
           <img className="max-w-28 md:max-w-32" src="https://saasly.prebuiltui.com/assets/companies-logo/walmart.svg" alt="" />
         </div>
       </section>
-
   )
 }
 

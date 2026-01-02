@@ -1,0 +1,3 @@
+VITE_BASEURL=https://aafnbzwzjuunztpccnaz.supabase.co/functions/v1/api
+VITE_SUPABASE_URL=https://aafnbzwzjuunztpccnaz.supabase.co
+VITE_SUPABASE_ANON_KEY=sb_publishable_p8Q9VwAuf9mnDw49DQVZEw_KJrqWVYh
